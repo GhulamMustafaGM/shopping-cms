@@ -83,9 +83,15 @@ app.use(function (req, res, next) {
     next();
 });
 
-app.get('/', function(req, res){
-    res.render('index');
-})
+// Set routes 
+var pages = require('./routes/pages.js');
+var products = require('./routes/products.js');
+var adminCategories = require('./routes/admin_categories.js');
+
+app.use('/admin/pages', adminPages);
+app.use('/admin/categories', adminCategories);
+app.use('/', pages);
+
 
 // Start the server
 var port = 3000;
