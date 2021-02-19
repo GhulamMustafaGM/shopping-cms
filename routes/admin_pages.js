@@ -1,5 +1,7 @@
 var express = require('express');
 var router = express.Router();
+var auth = require('../config/auth');
+var isAdmin = auth.isAdmin;
 
 // Get Page model
 var Page = require('../models/page');
@@ -8,11 +10,28 @@ var Page = require('../models/page');
  * GET pages index
  */
 router.get('/', isAdmin, function (req, res) {
-    Page.find({}).sort({ sorting: 1 }).exec(function (err, pages) {
+    Page.find({}).sort({sorting: 1}).exec(function (err, pages) {
         res.render('admin/pages', {
             pages: pages
         });
     });
+});
+
+/*
+ * GET add page
+ */
+router.get('/add-page', isAdmin, function (req, res) {
+
+    var title = "";
+    var slug = "";
+    var content = "";
+
+    res.render('admin/add_page', {
+        title: title,
+        slug: slug,
+        content: content
+    });
+
 });
 
 /*
@@ -39,7 +58,7 @@ router.post('/add-page', function (req, res) {
             content: content
         });
     } else {
-        Page.findOne({ slug: slug }, function (err, page) {
+        Page.findOne({slug: slug}, function (err, page) {
             if (page) {
                 req.flash('danger', 'Page slug exists, choose another.');
                 res.render('admin/add_page', {
@@ -59,7 +78,7 @@ router.post('/add-page', function (req, res) {
                     if (err)
                         return console.log(err);
 
-                    Page.find({}).sort({ sorting: 1 }).exec(function (err, pages) {
+                    Page.find({}).sort({sorting: 1}).exec(function (err, pages) {
                         if (err) {
                             console.log(err);
                         } else {
@@ -76,6 +95,30 @@ router.post('/add-page', function (req, res) {
 
 });
 
+// Sort pages function
+function sortPages(ids, callback) {
+    var count = 0;
+
+    for (var i = 0; i < ids.length; i++) {
+        var id = ids[i];
+        count++;
+
+        (function (count) {
+            Page.findById(id, function (err, page) {
+                page.sorting = count;
+                page.save(function (err) {
+                    if (err)
+                        return console.log(err);
+                    ++count;
+                    if (count >= ids.length) {
+                        callback();
+                    }
+                });
+            });
+        })(count);
+
+    }
+}
 
 /*
  * POST reorder pages
@@ -170,13 +213,19 @@ router.post('/edit-page/:id', function (req, res) {
                                 req.app.locals.pages = pages;
                             }
                         });
+
+
                         req.flash('success', 'Page edited!');
                         res.redirect('/admin/pages/edit-page/' + id);
                     });
+
                 });
+
+
             }
         });
     }
+
 });
 
 /*
@@ -203,3 +252,5 @@ router.get('/delete-page/:id', isAdmin, function (req, res) {
 
 // Exports
 module.exports = router;
+
+
