@@ -3,6 +3,7 @@ var path = require('path');
 var mongoose = require('mongoose');
 var config = require('./config/database');
 var bodyParser = require('body-parser');
+var session = require('express-session');
 
 // Connect to db
 mongoose.connect(config.database);
@@ -27,6 +28,14 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.urlencoded({extended: false}));
 // parse application/json
 app.use(bodyParser.json());
+
+// Express Session middleware
+app.use(session({
+    secret: 'keyboard cat',
+    resave: true,
+    saveUninitialized: true
+//  cookie: { secure: true }
+}));
 
 app.get('/', function(req, res){
     res.render('index');
