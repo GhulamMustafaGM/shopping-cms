@@ -2,6 +2,7 @@ var express = require('express');
 var path = require('path');
 var mongoose = require('mongoose');
 var config = require('./config/database');
+var bodyParser = require('body-parser');
 
 // Connect to db
 mongoose.connect(config.database);
@@ -20,6 +21,12 @@ app.set('view engine', 'ejs');
 
 // Set public folder
 app.use(express.static(path.join(__dirname, 'public')));
+
+// Body Parser middleware
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({extended: false}));
+// parse application/json
+app.use(bodyParser.json());
 
 app.get('/', function(req, res){
     res.render('index');
