@@ -95,7 +95,24 @@ router.post('/reorder-pages', function (req, res) {
 
 });
 
+/*
+ * GET edit page
+ */
+router.get('/edit-page/:id', isAdmin, function (req, res) {
 
+    Page.findById(req.params.id, function (err, page) {
+        if (err)
+            return console.log(err);
+
+        res.render('admin/edit_page', {
+            title: page.title,
+            slug: page.slug,
+            content: page.content,
+            id: page._id
+        });
+    });
+
+});
 
 
 // Exports
