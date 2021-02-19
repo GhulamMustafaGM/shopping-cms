@@ -8,8 +8,8 @@ var Page = require('../models/page');
  * GET /
  */
 router.get('/', function (req, res) {
-
-    Page.findOne({ slug: 'home' }, function (err, page) {
+    
+    Page.findOne({slug: 'home'}, function (err, page) {
         if (err)
             console.log(err);
 
@@ -18,7 +18,7 @@ router.get('/', function (req, res) {
             content: page.content
         });
     });
-
+    
 });
 
 /*
@@ -28,10 +28,10 @@ router.get('/:slug', function (req, res) {
 
     var slug = req.params.slug;
 
-    Page.findOne({ slug: slug }, function (err, page) {
+    Page.findOne({slug: slug}, function (err, page) {
         if (err)
             console.log(err);
-
+        
         if (!page) {
             res.redirect('/');
         } else {
@@ -42,7 +42,7 @@ router.get('/:slug', function (req, res) {
         }
     });
 
-
+    
 });
 
 // Exports
