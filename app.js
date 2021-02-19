@@ -6,6 +6,7 @@ var bodyParser = require('body-parser');
 var session = require('express-session');
 var expressValidator = require('express-validator');
 var fileUpload = require('express-fileupload');
+// var passport = require('passport');
 
 // Connect to db
 mongoose.connect(config.database);
@@ -18,7 +19,7 @@ db.once('open', function () {
 // Init app
 var app = express();
 
-// View engine setup 
+// View engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
@@ -32,7 +33,7 @@ app.locals.errors = null;
 var Page = require('./models/page');
 
 // Get all pages to pass to header.ejs
-Page.find({}).sort({sorting: 1}).exec(function (err, pages) {
+Page.find({}).sort({ sorting: 1 }).exec(function (err, pages) {
     if (err) {
         console.log(err);
     } else {
@@ -56,8 +57,9 @@ Category.find(function (err, categories) {
 app.use(fileUpload());
 
 // Body Parser middleware
+// 
 // parse application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.urlencoded({ extended: false }));
 // parse application/json
 app.use(bodyParser.json());
 
@@ -66,15 +68,15 @@ app.use(session({
     secret: 'keyboard cat',
     resave: true,
     saveUninitialized: true
-//  cookie: { secure: true }
+    //  cookie: { secure: true }
 }));
 
 // Express Validator middleware
 app.use(expressValidator({
     errorFormatter: function (param, msg, value) {
         var namespace = param.split('.')
-                , root = namespace.shift()
-                , formParam = root;
+            , root = namespace.shift()
+            , formParam = root;
 
         while (namespace.length) {
             formParam += '[' + namespace.shift() + ']';
@@ -111,6 +113,18 @@ app.use(function (req, res, next) {
     next();
 });
 
+// Passport Config
+// require('./config/passport')(passport);
+// // Passport Middleware
+// app.use(passport.initialize());
+// app.use(passport.session());
+
+// app.get('*', function (req, res, next) {
+//     res.locals.cart = req.session.cart;
+//     res.locals.user = req.user || null;
+//     next();
+// });
+
 // Set routes 
 var pages = require('./routes/pages.js');
 var products = require('./routes/products.js');
@@ -128,9 +142,8 @@ app.use('/cart', cart);
 app.use('/users', users);
 app.use('/', pages);
 
-
 // Start the server
 var port = 3000;
-app.listen(port, function(){
-    console.log('Server started on port' + port);
-})
+app.listen(port, function () {
+    console.log('Server started on port ' + port);
+});

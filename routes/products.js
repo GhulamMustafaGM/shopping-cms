@@ -28,6 +28,7 @@ router.get('/', function (req, res) {
 
 });
 
+
 /*
  * GET products by category
  */

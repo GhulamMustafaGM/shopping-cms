@@ -24,7 +24,7 @@
     "express-fileupload": "^1.2.1",
     "express-messages": "^1.0.1",
     "express-session": "^1.17.1",
-    "express-validator": "^6.9.2",
+    "express-validator": "^4.3.0",
     "fs-extra": "^9.1.0",
     "mkdirp": "^1.0.4",
     "mongoose": "^5.11.17",
